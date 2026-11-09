@@ -1,0 +1,30 @@
+## Interface: 16001
+## Title: |cff7fd4ffBirdsong|r
+## IconTexture: Interface\AddOns\Birdsong\media\icon
+## Notes: A birder's field guide to Azeroth: real bird calls, an atlas of every bird with 3D models and map pins, a life list, journal and badges.
+## Author: Harry
+## Version: 0.3.2
+## X-Curse-Project-ID: 0000000
+## SavedVariables: BirdsongDB
+## SavedVariablesPerCharacter: BirdsongCharDB
+## AddonCompartmentFunc: Birdsong_OnCompartmentClick
+
+Core.lua
+Bugs.lua
+Sounds.lua
+Atlas.lua
+Spawns.lua
+Zones.lua
+Birds.lua
+Audio.lua
+Sightings.lua
+Buddy.lua
+Badges.lua
+UIKit.lua
+Toast.lua
+Model.lua
+MapPins.lua
+Tooltip.lua
+Book.lua
+Settings.lua
+Minimap.lua

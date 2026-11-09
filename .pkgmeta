@@ -1,0 +1,17 @@
+# BigWigs packager config: builds Birdsong-<tag>.zip and uploads it.
+package-as: Birdsong
+
+ignore:
+  - tests
+  - CLAUDE.md
+  - WOW_ADDON_PLAYBOOK.md
+  - .github
+  - .gitignore
+  - tools
+  - curseforge
+
+
+# Use our CHANGELOG.md as the changelog on CurseForge / GitHub releases
+manual-changelog:
+  filename: CHANGELOG.md
+  markup-type: markdown
