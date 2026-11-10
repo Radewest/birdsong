@@ -4,10 +4,10 @@
 
 ## What it is
 - A roleplay-flavoured birder's field guide for WoW Forever. It plays the game's own bird calls and zone soundscapes (by FileDataID, so no audio is shipped) and keeps a life list of every bird you target or mouse over.
-- **Owner:** Harry. **Licence:** MIT. **CurseForge project ID:** (not yet). **GitHub:** (not yet).
+- **Owner:** Harry. **Licence:** MIT. **CurseForge project ID:** 1794654. **GitHub:** Radewest/birdsong.
 - **Name:** Birdsong (confirmed by Harry, 2026-11-09).
 - **Art:** icon generated with Higgsfield (GPT Image 2.6), 2026-11-09. `media/icon.tga` (64 px) and `media/pin.tga` (64 px round crop for map pins); 400 px CurseForge logo and 1024 px original are in the OneDrive `wow-forever-addons` folder.
-- **Current version:** v0.3.2 (local test build, not published)
+- **Current version:** v0.3.3 (first automatic CurseForge release)
 
 ## Architecture
 | File | Role |
@@ -68,4 +68,4 @@
 2. **v0.2 Atlas (done):** every classic bird by zone, 3D models, creature-ID sightings, kinds in the life list, tab rework, settings, minimap button.
 3. **v0.3 (this build):** map pins, rares, tooltip line, binoculars emote, journal, badges, birding buddy, zone notes.
 4. **Maybe:** BirdNET analysis of soundscape loops to name the real-world birds in them (Harry: "later, if at all").
-5. **Next:** publish to GitHub (Radewest/birdsong) + CurseForge so Harry's friend can install it.
+5. **Published:** GitHub Radewest/birdsong, CurseForge 1794654. Pushing a version bump to main is the release.

@@ -1,5 +1,8 @@
 # Birdsong changelog
 
+## v0.3.3 (2026-11-10)
+- First release on CurseForge, published automatically from GitHub.
+
 ## v0.3.2 (2026-11-09)
 - Discoveries: birds the Atlas didn't know about (like the Green Wing Macaw) are added to your Atlas as your own discoveries, with their zone and level, and count towards your life list and badges.
 - Big Day now counts each kind of bird once, the same way as the rest of the life list.
