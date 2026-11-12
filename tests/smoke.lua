@@ -230,6 +230,27 @@ check(#ns.KINDS[999001].z == 2 and ns.KIND_COUNT == countBefore + 1, "seen in a 
 check(#ns.EncodeKinds(ns.db.kinds) == math.ceil(ns.ATLAS_KIND_COUNT / 4), "buddy bitmask ignores discoveries")
 ns:OpenKind(999001)
 
+print("Lifer reaction")
+PLAYED = {}; EMOTED = {}
+ns.db.liferReaction = "emote"
+check(ns:LiferReaction() > 0 and PLAYED[#PLAYED]:find("lifer.ogg") and EMOTED[1] == "GASP", "gasp sound plays and /gasp emote fires")
+PLAYED = {}; EMOTED = {}
+ns.db.liferReaction = "sound"
+check(ns:LiferReaction() > 0 and #PLAYED == 1 and #EMOTED == 0, "sound-only setting: no emote")
+PLAYED = {}; EMOTED = {}
+ns.db.liferReaction = "off"
+check(ns:LiferReaction() == 0 and #PLAYED == 0 and #EMOTED == 0, "off: nothing")
+IN_COMBAT = true; ns.db.liferReaction = "emote"; EMOTED = {}
+ns:LiferReaction()
+check(#EMOTED == 0, "no emote in combat")
+IN_COMBAT = false
+EMOTED = {}
+UNITS.target = { name = "Ironbeak Owl", type = "Beast", guid = "Creature-0-1-2-3-7097-0001" }
+ns.db.sightings.owl = nil
+fire("PLAYER_TARGET_CHANGED")
+check(EMOTED[1] == "GASP", "a real lifer triggers the reaction")
+local h = io.open(root .. "/media/lifer.ogg", "rb"); check(h ~= nil, "lifer.ogg is shipped"); if h then h:close() end
+
 print("Every tab")
 for _, t in ipairs({ "guide", "atlas", "zones", "journal", "badges", "sounds", "settings" }) do ns:OpenBook(nil, t) end
 ns:OpenKind(462); ns:OpenBook("owl")

@@ -107,6 +107,8 @@ function ns:BuildSettingsPanel(parent)
     function() return db().toastKinds end, function(v) db().toastKinds = v end))
   place(checkbox(p, "Play the bird's call", nil,
     function() return db().toastSound end, function(v) db().toastSound = v end))
+  place(cycle(p, "Lifer reaction", { { "emote", "Gasp + /gasp" }, { "sound", "Gasp sound" }, { "off", "Off" } },
+    function() return db().liferReaction end, function(v) db().liferReaction = v end))
   place(checkbox(p, "Buddy's lifers", nil,
     function() return db().buddyToasts end, function(v) db().buddyToasts = v end))
 

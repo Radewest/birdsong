@@ -90,7 +90,14 @@ showNow = function(o)
   toast:Show()
   if o.sound and ns.db.toastSound then
     local t = ns:SignatureCall(o.sound)
-    if t then ns:PlayBird(o.sound, t) end
+    if t then
+      -- after a Lifer reaction, let the gasp finish before the bird calls
+      if o.callDelay and C_Timer then
+        C_Timer.After(o.callDelay, function() ns:PlayBird(o.sound, t) end)
+      else
+        ns:PlayBird(o.sound, t)
+      end
+    end
   end
   local shownAt = GetTime()
   toast.shownAt = shownAt
@@ -100,19 +107,45 @@ showNow = function(o)
 end
 ns.ShowToast = show
 
+---------------------------------------------------------------------------
+-- Lifer reaction: Harry's gasp sound clip, plus the /gasp emote (setting: off | sound | emote)
+---------------------------------------------------------------------------
+local LIFER_SOUND = "Interface\\AddOns\\Birdsong\\media\\lifer.ogg"
+local LIFER_LENGTH = 3.2  -- seconds; the bird's call waits this long
+
+-- Returns how long to wait before the bird's call (0 if no sound played)
+function ns:LiferReaction()
+  local mode = self.db.liferReaction or "emote"
+  if mode == "off" then return 0 end
+  local played = false
+  if PlaySoundFile then
+    local ok, willPlay = pcall(PlaySoundFile, LIFER_SOUND, self.db.channel or "Master")
+    played = ok and willPlay and true or false
+  end
+  if mode == "emote" and not (InCombatLockdown and InCombatLockdown()) then
+    -- may be blocked by the client's add-on rules; never let that break anything
+    if DoEmote then pcall(DoEmote, "GASP")
+    elseif C_ChatInfo and C_ChatInfo.PerformEmote then pcall(C_ChatInfo.PerformEmote, "GASP") end
+  end
+  return played and LIFER_LENGTH or 0
+end
+
 local function where(bird, zone) return string.format("|cffaaaaaa(%s, %s)|r", bird.name, zone or "?") end
 local function isRare(kindID) return kindID and ns.KINDS[kindID] and ns.KINDS[kindID].rare end
 
 ns:Listen("RARE_SEEN", function(bird, creatureName, zone, kindID, isNewKind)
+  local delay = isNewKind and ns:LiferReaction() or 0
   if not ns.db.toast then return end
   show({ title = UI.RARE .. "Rare bird!|r", lifer = isNewKind, body = creatureName .. "  " .. where(bird, zone),
-    sound = bird.key, kindID = kindID, creatureName = creatureName, rare = true, spot = true, border = { 1, 0.67, 0.2 } })
+    sound = bird.key, callDelay = delay > 0 and delay or nil, kindID = kindID, creatureName = creatureName, rare = true, spot = true, border = { 1, 0.67, 0.2 } })
 end)
 
 ns:Listen("NEW_SPECIES", function(bird, creatureName, zone, kindID)
-  if not ns.db.toast or isRare(kindID) then return end
+  if isRare(kindID) then return end -- RARE_SEEN handles rares
+  local delay = ns:LiferReaction()
+  if not ns.db.toast then return end
   show({ title = UI.BLUE .. "New species!|r", lifer = true, body = (creatureName or bird.name) .. "  " .. where(bird, zone),
-    sound = bird.key, kindID = kindID, birdKey = bird.key, creatureName = creatureName, spot = true })
+    sound = bird.key, callDelay = delay > 0 and delay or nil, kindID = kindID, birdKey = bird.key, creatureName = creatureName, spot = true })
 end)
 
 ns:Listen("NEW_KIND", function(bird, creatureName, zone, kindID)

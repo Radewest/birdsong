@@ -143,3 +143,6 @@ ADDON_SENT = {}
 C_ChatInfo.SendAddonMessage = function(p, m, c, t) ADDON_SENT[#ADDON_SENT+1] = { p = p, m = m, c = c, t = t } end
 TooltipDataProcessor = { AddTooltipPostCall = function(kind, fn) TOOLTIP_HOOK = fn end }
 Enum = { TooltipDataType = { Unit = 2 } }
+
+EMOTED = {}
+DoEmote = function(e) EMOTED[#EMOTED+1] = e end

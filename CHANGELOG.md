@@ -1,5 +1,9 @@
 # Birdsong changelog
 
+## v0.3.5 (2026-11-12)
+- Lifer reaction: a new species now plays a gasp sound and your character does /gasp, then the bird calls.
+- New setting "Lifer reaction" (Settings > Pop-ups): Gasp + /gasp, Gasp sound only, or Off.
+
 ## v0.3.4 (2026-11-12)
 - Every badge has its own hand-painted icon, shown in the Badges tab (greyed out until earned) and on the "Badge earned!" pop-up.
 

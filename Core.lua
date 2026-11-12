@@ -5,7 +5,7 @@
 local ADDON, ns = ...
 _G.Birdsong = ns -- handy for /dump Birdsong while developing
 
-ns.VERSION = "0.3.4"   -- keep in sync with ## Version in both TOCs
+ns.VERSION = "0.3.5"   -- keep in sync with ## Version in both TOCs
 
 ---------------------------------------------------------------------------
 -- API shims (Forever runs the modern Midnight-era client; keep fallbacks anyway)
@@ -97,6 +97,7 @@ local DEFAULTS = {
   buddyToasts = true,   -- pop-up when the buddy logs a lifer
   toast = true,         -- pop-up on a new species
   toastSound = true,    -- play the bird's call with the pop-up
+  liferReaction = "emote", -- on a lifer: "off" | "sound" (gasp clip) | "emote" (gasp clip + /gasp)
   welcomed = false,
   window = {},          -- saved position
 }
