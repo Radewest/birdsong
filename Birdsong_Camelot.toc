@@ -3,7 +3,7 @@
 ## IconTexture: Interface\AddOns\Birdsong\media\icon
 ## Notes: A birder's field guide to Azeroth: real bird calls, an atlas of every bird with 3D models and map pins, a life list, journal and badges.
 ## Author: Harry
-## Version: 0.3.5
+## Version: 0.3.6
 ## X-Curse-Project-ID: 1794654
 ## SavedVariables: BirdsongDB
 ## SavedVariablesPerCharacter: BirdsongCharDB

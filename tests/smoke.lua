@@ -249,6 +249,7 @@ UNITS.target = { name = "Ironbeak Owl", type = "Beast", guid = "Creature-0-1-2-3
 ns.db.sightings.owl = nil
 fire("PLAYER_TARGET_CHANGED")
 check(EMOTED[1] == "GASP", "a real lifer triggers the reaction")
+EMOTED = {}; ns:Gasp(); check(EMOTED[1] == "GASP", "Gasp button emote")
 local h = io.open(root .. "/media/lifer.ogg", "rb"); check(h ~= nil, "lifer.ogg is shipped"); if h then h:close() end
 
 print("Every tab")

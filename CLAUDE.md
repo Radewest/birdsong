@@ -7,7 +7,7 @@
 - **Owner:** Harry. **Licence:** MIT. **CurseForge project ID:** 1794654. **GitHub:** Radewest/birdsong.
 - **Name:** Birdsong (confirmed by Harry, 2026-11-09).
 - **Art:** icon generated with Higgsfield (GPT Image 2.6), 2026-11-09. `media/icon.tga` (64 px) and `media/pin.tga` (64 px round crop for map pins); `media/lifer.ogg` (Harry's own gasp clip, 3.1 s, made louder and converted to OGG; plays on a lifer); `media/badges/<badgeID>.tga` (24 badge icons, 64 px, Higgsfield 2026-11-12, about 6 credits; originals in the OneDrive folder); 400 px CurseForge logo and 1024 px original are in the OneDrive `wow-forever-addons` folder.
-- **Current version:** v0.3.5
+- **Current version:** v0.3.6
 
 ## Architecture
 | File | Role |
@@ -60,7 +60,7 @@
 
 ## Conventions
 - **Harry's workflow rules:** (1) any new art, sound or other asset goes to Harry for review *before* it's built in; (2) build and test, then tell him exactly what will go out (version + changes) and **wait for his go before pushing to GitHub/CurseForge**. A push to main is a public release.
-- **Lifer reaction** (`ns:LiferReaction` in Toast.lua): plays `media/lifer.ogg`, then `DoEmote("GASP")` (pcall; may be blocked by Midnight's add-on rules, untested in game), and delays the bird's call by 3.2 s. Setting `db.liferReaction` = emote | sound | off.
+- **Lifer reaction** (`ns:LiferReaction` in Toast.lua): plays `media/lifer.ogg`, then `DoEmote("GASP")` (pcall; may be blocked by Midnight's add-on rules, untested in game), and delays the bird's call by 3.2 s. The Lifer pop-up also has a **Gasp** button (`ns:Gasp`), a hardware click, in case the automatic emote is blocked. Setting `db.liferReaction` = emote | sound | off.
 - **Every change:** bump `## Version` in both TOCs and `ns.VERSION`; add a CHANGELOG entry; run `python3 tests/run_tests.py`. Once on GitHub, pushing a new version *is* the release (playbook section 6).
 - Add new files to both TOCs, and give every feature a check in `tests/smoke.lua`.
 - Guard modern APIs, pcall risky calls, check `ns.IsSecret`. Pop-ups never echo to chat by default.

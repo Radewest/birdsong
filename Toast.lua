@@ -41,6 +41,16 @@ local function build()
     self:Disable()
   end)
 
+  -- Gasp: your own click, so the /gasp emote isn't blocked like an automatic one can be
+  f.gasp = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
+  f.gasp:SetSize(54, 20)
+  f.gasp:SetPoint("TOP", f.spot, "BOTTOM", 0, -4)
+  f.gasp:SetText("Gasp")
+  f.gasp:SetScript("OnClick", function(self)
+    ns:Gasp()
+    self:Disable()
+  end)
+
   f:SetScript("OnClick", function(self)
     self:Hide()
     if self.badge then ns:OpenBook(nil, "badges")
@@ -79,7 +89,7 @@ showNow = function(o)
   toast.lifer:SetShown(o.lifer and true or false)
   toast.body:ClearAllPoints()
   toast.body:SetPoint("TOPLEFT", o.lifer and toast.lifer or toast.title, "BOTTOMLEFT", 0, -4)
-  toast.body:SetPoint("RIGHT", -10, 0)
+  toast.body:SetPoint("RIGHT", (o.spot or o.lifer) and -70 or -10, 0)
   toast.body:SetText(o.body or "")
   toast:SetHeight(o.lifer and 82 or 64)
   toast.icon:SetTexture(o.icon or "Interface\\AddOns\\Birdsong\\media\\icon")
@@ -87,6 +97,8 @@ showNow = function(o)
   toast:SetBackdropBorderColor(c[1], c[2], c[3])
   toast.spot:SetShown(o.spot and true or false)
   toast.spot:Enable()
+  toast.gasp:SetShown(o.lifer and true or false)
+  toast.gasp:Enable()
   toast:Show()
   if o.sound and ns.db.toastSound then
     local t = ns:SignatureCall(o.sound)
@@ -113,6 +125,14 @@ ns.ShowToast = show
 local LIFER_SOUND = "Interface\\AddOns\\Birdsong\\media\\lifer.ogg"
 local LIFER_LENGTH = 3.2  -- seconds; the bird's call waits this long
 
+-- The /gasp emote (from the Gasp button, or automatically when the setting allows)
+function ns:Gasp()
+  if InCombatLockdown and InCombatLockdown() then return false end
+  if DoEmote then return pcall(DoEmote, "GASP") end
+  if C_ChatInfo and C_ChatInfo.PerformEmote then return pcall(C_ChatInfo.PerformEmote, "GASP") end
+  return false
+end
+
 -- Returns how long to wait before the bird's call (0 if no sound played)
 function ns:LiferReaction()
   local mode = self.db.liferReaction or "emote"
@@ -122,11 +142,7 @@ function ns:LiferReaction()
     local ok, willPlay = pcall(PlaySoundFile, LIFER_SOUND, self.db.channel or "Master")
     played = ok and willPlay and true or false
   end
-  if mode == "emote" and not (InCombatLockdown and InCombatLockdown()) then
-    -- may be blocked by the client's add-on rules; never let that break anything
-    if DoEmote then pcall(DoEmote, "GASP")
-    elseif C_ChatInfo and C_ChatInfo.PerformEmote then pcall(C_ChatInfo.PerformEmote, "GASP") end
-  end
+  if mode == "emote" then self:Gasp() end -- may be blocked by the client's add-on rules; pcall keeps it safe
   return played and LIFER_LENGTH or 0
 end
 

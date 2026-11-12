@@ -1,5 +1,9 @@
 # Birdsong changelog
 
+## v0.3.6 (2026-11-12)
+- "Gasp" button on the Lifer pop-up, under "Spot": click it to do /gasp yourself (works even if the game blocks the automatic one).
+- Pop-up text no longer runs under its buttons.
+
 ## v0.3.5 (2026-11-12)
 - Lifer reaction: a new species now plays a gasp sound and your character does /gasp, then the bird calls.
 - New setting "Lifer reaction" (Settings > Pop-ups): Gasp + /gasp, Gasp sound only, or Off.
