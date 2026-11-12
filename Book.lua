@@ -489,13 +489,23 @@ local function buildBadges(content)
   b:SetAllPoints()
   b.head = label(b, "GameFontNormal")
   b.head:SetPoint("TOPLEFT", 4, 0)
-  b.list = UI.makeList(b, 752, 404, 30, function(r, p)
+  b.list = UI.makeList(b, 752, 404, 36, function(r, p)
     local done = p.earned
-    r.left:SetText((done and (GOLD .. "* ") or (GREY .. "  ")) .. p.badge.name .. "|r  " .. GREY .. p.badge.desc .. "|r")
+    r.icon:SetTexture(ns:BadgeIcon(p.badge.id))
+    r.icon:SetDesaturated(not done)
+    r.icon:SetAlpha(done and 1 or 0.55)
+    r.left:SetText((done and GOLD or "|cffcccccc") .. p.badge.name .. "|r  " .. GREY .. p.badge.desc .. "|r")
     r.right:SetText(done and (GREEN .. UI.fmtDate(p.earned) .. "|r") or (GREY .. p.cur .. " / " .. p.goal .. "|r"))
     r.hl:SetShown(false)
   end, function() end, 110)
   b.list:SetPoint("TOPLEFT", 0, -26)
+  for _, r in ipairs(b.list.rows) do
+    -- badge art on the left of each row; greyed out until earned
+    r.icon = r:CreateTexture(nil, "ARTWORK")
+    r.icon:SetSize(30, 30)
+    r.icon:SetPoint("LEFT", 2, 0)
+    r.left:SetPoint("LEFT", 40, 0)
+  end
   return b
 end
 

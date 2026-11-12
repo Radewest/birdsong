@@ -205,6 +205,12 @@ ns:LogSighting(ns.BIRD_BY_KEY.owl, "Strigid Hunter", "Teldrassil", 1997)
 GAME_HOUR = 12
 check(earned.first and earned.rare1 and earned.nightowl, "first, rare and night owl badges earned")
 check(ns.db.badges.first and not ns.db.badges.kindsall, "unearned badges stay unearned")
+local f = io.open
+for _, b in ipairs(ns.BADGES) do
+  local h = f(root .. "/media/badges/" .. b.id .. ".tga", "rb")
+  check(h ~= nil, "badge art exists for " .. b.id)
+  if h then h:close() end
+end
 local prog = ns:BadgeProgress()
 check(#prog == #ns.BADGES and #ns.BADGES >= 20, #ns.BADGES .. " badges with progress")
 

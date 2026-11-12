@@ -82,6 +82,7 @@ showNow = function(o)
   toast.body:SetPoint("RIGHT", -10, 0)
   toast.body:SetText(o.body or "")
   toast:SetHeight(o.lifer and 82 or 64)
+  toast.icon:SetTexture(o.icon or "Interface\\AddOns\\Birdsong\\media\\icon")
   local c = o.border or { 0.5, 0.83, 1 }
   toast:SetBackdropBorderColor(c[1], c[2], c[3])
   toast.spot:SetShown(o.spot and true or false)
@@ -122,7 +123,7 @@ end)
 
 ns:Listen("BADGE_EARNED", function(b)
   if not ns.db.toast then return end
-  show({ title = UI.GOLD .. "Badge earned!|r", body = b.name .. "  |cffaaaaaa" .. b.desc .. "|r", badge = b.id, border = { 1, 0.82, 0 } })
+  show({ title = UI.GOLD .. "Badge earned!|r", body = b.name .. "  |cffaaaaaa" .. b.desc .. "|r", badge = b.id, icon = ns:BadgeIcon(b.id), border = { 1, 0.82, 0 } })
 end)
 
 ns:Listen("BUDDY_LIFER", function(kindID)

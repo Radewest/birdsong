@@ -1,5 +1,8 @@
 # Birdsong changelog
 
+## v0.3.4 (2026-11-12)
+- Every badge has its own hand-painted icon, shown in the Badges tab (greyed out until earned) and on the "Badge earned!" pop-up.
+
 ## v0.3.3 (2026-11-10)
 - First release on CurseForge, published automatically from GitHub.
 

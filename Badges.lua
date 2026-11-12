@@ -68,6 +68,11 @@ for _, b in ipairs({
   { id = "shared10", name = "Birds of a Feather", desc = "You and your buddy have both seen 10 kinds.", p = function(s) return s.shared, 10 end },
 }) do table.insert(ns.BADGES, b) end
 
+-- Painted badge art (media/badges/<id>.tga, made with Higgsfield); the add-on icon as a fallback
+function ns:BadgeIcon(id)
+  return "Interface\\AddOns\\Birdsong\\media\\badges\\" .. id
+end
+
 ns.BADGE_BY_ID = {}
 for _, b in ipairs(ns.BADGES) do ns.BADGE_BY_ID[b.id] = b end
 

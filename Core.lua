@@ -5,7 +5,7 @@
 local ADDON, ns = ...
 _G.Birdsong = ns -- handy for /dump Birdsong while developing
 
-ns.VERSION = "0.3.3"   -- keep in sync with ## Version in both TOCs
+ns.VERSION = "0.3.4"   -- keep in sync with ## Version in both TOCs
 
 ---------------------------------------------------------------------------
 -- API shims (Forever runs the modern Midnight-era client; keep fallbacks anyway)
