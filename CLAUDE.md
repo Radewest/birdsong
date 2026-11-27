@@ -7,7 +7,7 @@
 - **Owner:** Harry. **Licence:** MIT. **CurseForge project ID:** 1794654. **GitHub:** Radewest/birdsong.
 - **Name:** Birdsong (confirmed by Harry, 2026-11-09).
 - **Art:** icon generated with Higgsfield (GPT Image 2.6), 2026-11-09. `media/icon.tga` (64 px) and `media/pin.tga` (64 px round crop for map pins); `media/lifer.ogg` (Harry's own gasp clip, 3.1 s, made louder and converted to OGG; plays on a lifer); `media/badges/<badgeID>.tga` (24 badge icons, 64 px, Higgsfield 2026-11-12, about 6 credits; originals in the OneDrive folder); 400 px CurseForge logo and 1024 px original are in the OneDrive `wow-forever-addons` folder.
-- **Current version:** v0.3.6
+- **Current version:** v0.3.7
 
 ## Architecture
 | File | Role |
@@ -37,6 +37,8 @@
 - **Recognise birds by creature ID** (from the unit GUID) against the Atlas; whole-word name matching is only the fallback for creatures not in the Atlas (later-lands birds, pets). Humanoid/Undead and players are skipped.
 - **Atlas data** comes from two open-source projects, parsed as text and never executed: cmangos classic-db (`creature_template`: name, levels, family 7/12/26 = carrion bird/tallstrider/owl, model IDs) and pfQuest (`db/units.lua` spawn zones, `db/enUS/zones.lua`). Parrots, chickens, gryphons and hippogryphs have no pet family, so they're picked by name. Creatures with no spawns are dropped, as are the flight-path event birds 9526/9527. To regenerate: clone both repos into a scratch folder, `zcat` the cmangos Full_DB SQL to `full.sql`, then run `tools/parse.py`, `tools/birds_db.py`, `tools/gen_atlas.py > Atlas.lua`.
 - **Discoveries:** a bird matched by name but missing from the Atlas data is saved in `db.found[npcID]` and added to `ns.KINDS` (flag `found`, no display ID, so the model uses `SetCreature`). It counts like any kind; its zones and level range grow as you see it. Buddy bitmasks use only the shipped Atlas (`ns.ATLAS_KIND_COUNT`). Harry's first ones: Green Wing Macaw, Prairie Chicken (worth adding to the Atlas data properly).
+- **Not wild birds:** skip `UnitPlayerControlled`, other players' pets, battle-pet companions and `Pet-` GUIDs. Name-word fallback only when `UnitCreatureType` is Beast or Critter (v0.3.7, after Harry's life list caught hunter-pet owls in Stormwind and "Shore Strider", NPC 5359, a coast giant). `ns:CleanBadDiscoveries()` ran once (`db.cleanup1`) to undo those.
+- **New files need a full WoW restart**, not /reload: the client only indexes add-on files at start-up. Likely reason the lifer sound didn't play right after updating to v0.3.5.
 - **Models by display ID** (works without having seen the creature); creature ID fallback.
 - **Rares** = cmangos Rank 2 (rare elite) or 4 (rare): 8 birds.
 - **Binoculars emote only from a click or /birds spot** (never automatic): chat from add-ons is restricted under Midnight.
@@ -60,7 +62,7 @@
 
 ## Conventions
 - **Harry's workflow rules:** (1) any new art, sound or other asset goes to Harry for review *before* it's built in; (2) build and test, then tell him exactly what will go out (version + changes) and **wait for his go before pushing to GitHub/CurseForge**. A push to main is a public release.
-- **Lifer reaction** (`ns:LiferReaction` in Toast.lua): plays `media/lifer.ogg`, then `DoEmote("GASP")` (pcall; may be blocked by Midnight's add-on rules, untested in game), and delays the bird's call by 3.2 s. The Lifer pop-up also has a **Gasp** button (`ns:Gasp`), a hardware click, in case the automatic emote is blocked. Setting `db.liferReaction` = emote | sound | off.
+- **Lifer reaction** (`ns:LiferReaction` in Toast.lua): plays `media/lifer.ogg`, then `DoEmote("GASP")` (pcall; may be blocked by Midnight's add-on rules, untested in game), and delays the bird's call by 3.2 s. The Lifer pop-up also has a **Gasp** button (`ns:Gasp`), a hardware click, in case the automatic emote is blocked. Setting `db.liferReaction` = emote | sound | off. Since v0.3.7 it fires for every new kind, not only a new species.
 - **Every change:** bump `## Version` in both TOCs and `ns.VERSION`; add a CHANGELOG entry; run `python3 tests/run_tests.py`. Once on GitHub, pushing a new version *is* the release (playbook section 6).
 - Add new files to both TOCs, and give every feature a check in `tests/smoke.lua`.
 - Guard modern APIs, pcall risky calls, check `ns.IsSecret`. Pop-ups never echo to chat by default.

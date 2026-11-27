@@ -252,6 +252,40 @@ check(EMOTED[1] == "GASP", "a real lifer triggers the reaction")
 EMOTED = {}; ns:Gasp(); check(EMOTED[1] == "GASP", "Gasp button emote")
 local h = io.open(root .. "/media/lifer.ogg", "rb"); check(h ~= nil, "lifer.ogg is shipped"); if h then h:close() end
 
+print("v0.3.7 fixes")
+local before = ns:KindsSeen()
+UNITS.target = { name = "Shore Strider", type = "Giant", guid = "Creature-0-1-2-3-5359-0001" }
+fire("PLAYER_TARGET_CHANGED")
+check(ns.db.found[5359] == nil and ns:KindsSeen() == before, "a giant called Shore Strider is not a bird")
+UNITS.target = { name = "Owl", type = "Beast", guid = "Pet-0-1-2-3-1997-0001", pet = true }
+fire("PLAYER_TARGET_CHANGED")
+check(ns:KindsSeen() == before, "a hunter pet owl is ignored")
+-- clean-up of old bad entries
+ns.db.found[5359] = { n = "Shore Strider", s = "tallstrider", l1 = 40, l2 = 40, z = { "Feralas" } }
+ns.db.found[888888] = { n = "Owl", s = "owl", l1 = 8, l2 = 60, z = { "Stormwind City" } }
+ns.db.kinds[5359] = { count = 1, first = 1 }; ns.db.kinds[888888] = { count = 67, first = 1 }
+ns.db.sightings.tallstrider = ns.db.sightings.tallstrider or { count = 0, first = time() }
+local owlBefore = ns.db.sightings.owl and ns.db.sightings.owl.count or 0
+ns.db.sightings.owl = ns.db.sightings.owl or { count = 0, first = time() }
+ns.db.sightings.owl.count = ns.db.sightings.owl.count + 67
+ns.db.zones["Stormwind City"] = { owl = 67 }
+table.insert(ns.db.log, 1, { t = 1, zone = "Stormwind City", id = 888888, s = "owl", n = "Owl", c = 67 })
+ns.db.sightings.owl.first, ns.db.sightings.owl.firstZone = 1, "Stormwind City"
+local removed = ns:CleanBadDiscoveries()
+check(removed == 2 and not ns.db.found[5359] and not ns.db.found[888888] and not ns.db.kinds[888888], "clean-up removes pet and non-bird discoveries")
+check(ns.db.zones["Stormwind City"].owl == nil, "their zone counts are taken back out")
+check(not ns.db.sightings.owl or (ns.db.sightings.owl.count == owlBefore and ns.db.sightings.owl.firstZone ~= "Stormwind City"), "species count and first sighting corrected")
+check(ns:CleanBadDiscoveries() == 0, "clean-up is safe to run twice")
+-- lifer reaction for a new kind (not just a new species)
+EMOTED = {}; PLAYED = {}; ns.db.liferReaction = "emote"
+UNITS.target = { name = "Strigid Hunter", type = "Beast", guid = "Creature-0-1-2-3-1997-0009" }
+ns.db.kinds[1997] = nil
+fire("PLAYER_TARGET_CHANGED")
+local gasped = false
+for _, id in ipairs(PLAYED) do if tostring(id):find("lifer.ogg") then gasped = true end end
+check(gasped and EMOTED[1] == "GASP", "a new kind of a known species also gets the lifer gasp")
+check(ns:PlayLiferSound(), "test-the-gasp button plays the clip")
+
 print("Every tab")
 for _, t in ipairs({ "guide", "atlas", "zones", "journal", "badges", "sounds", "settings" }) do ns:OpenBook(nil, t) end
 ns:OpenKind(462); ns:OpenBook("owl")

@@ -22,7 +22,7 @@ ns.BIRDS = {
   },
   {
     key = "tallstrider", name = "Tallstrider", family = "Striders",
-    words = { "plainstrider", "tallstrider", "strider" },
+    words = { "plainstrider", "tallstrider", "foreststrider" },
     note = "A long-legged runner of the open plains. More legs than sense, and famously grumpy when disturbed.",
     native = true,
   },
@@ -178,8 +178,61 @@ function ns:Discover(id, name, key, zone, level)
   return k
 end
 
+-- One-time clean-up (v0.3.7): earlier versions logged hunter pets (named "Owl" etc.) and
+-- non-birds matched on a loose word ("Shore Strider", a giant). Remove those discoveries and
+-- take their sightings back out of the life list, journal and zone counts.
+local PET_NAMES = { ["owl"] = true, ["carrion bird"] = true, ["tallstrider"] = true }
+function ns:CleanBadDiscoveries()
+  local db, bad = self.db, {}
+  for id, f in pairs(db.found) do
+    local n = (f.n or ""):lower()
+    if PET_NAMES[n] or not self:MatchBird(f.n) then bad[id] = true end
+  end
+  if not next(bad) then return 0 end
+  local removed = 0
+  for i = #db.log, 1, -1 do
+    local e = db.log[i]
+    if e.id and bad[e.id] then
+      local c = e.c or 1
+      local zt = db.zones[e.zone]
+      if zt and zt[e.s] then zt[e.s] = zt[e.s] - c; if zt[e.s] <= 0 then zt[e.s] = nil end end
+      local s = db.sightings[e.s]
+      if s then s.count = (s.count or 0) - c end
+      table.remove(db.log, i)
+    end
+  end
+  for id in pairs(bad) do
+    db.found[id] = nil; db.kinds[id] = nil; db.pins[id] = nil
+    removed = removed + 1
+  end
+  -- fix each species' "first seen" (or drop it if nothing real is left)
+  for key, s in pairs(db.sightings) do
+    local first
+    for _, e in ipairs(db.log) do
+      if e.s == key and not e.page and (not first or e.t < first.t) then first = e end
+    end
+    if not first or (s.count or 0) <= 0 then
+      db.sightings[key] = nil
+    elseif s.first ~= first.t then
+      s.first, s.firstZone, s.firstName = first.t, first.zone, first.n
+    end
+  end
+  return removed
+end
+
 ns:Listen("DB_READY", function()
+  if not ns.db.cleanup1 then
+    ns.db.cleanup1 = true
+    local n = ns:CleanBadDiscoveries()
+    if n > 0 then ns.cleanedCount = n end
+  end
   for id, f in pairs(ns.db.found) do addFound(id, f) end
+end)
+
+ns:Listen("LOGIN", function()
+  if ns.cleanedCount then
+    ns:Print(ns.cleanedCount .. " wrong entr" .. (ns.cleanedCount == 1 and "y" or "ies") .. " removed from your life list (hunter pets or non-birds picked up by mistake).")
+  end
 end)
 
 -- Zones a species lives in, most kinds first

@@ -19,7 +19,7 @@ ns.ZoneName = zoneName
 function ns.NpcIDFromGUID(guid)
   if type(guid) ~= "string" then return nil end
   local kind, _, _, _, _, id = strsplit("-", guid)
-  if kind == "Creature" or kind == "Vehicle" or kind == "Pet" then return tonumber(id) end
+  if kind == "Creature" or kind == "Vehicle" then return tonumber(id) end -- not "Pet": hunter pets aren't wild birds
 end
 
 -- Record a sighting. kindID is optional (an Atlas creature ID). Returns true for a new species.
@@ -138,6 +138,10 @@ end
 local function check(unit)
   if not UnitExists or not UnitExists(unit) then return end
   if UnitIsPlayer and UnitIsPlayer(unit) then return end
+  -- hunter pets, companions and anything else a player controls aren't wild birds
+  if UnitPlayerControlled and UnitPlayerControlled(unit) then return end
+  if UnitIsOtherPlayersPet and UnitIsOtherPlayersPet(unit) then return end
+  if UnitIsBattlePetCompanion and UnitIsBattlePetCompanion(unit) then return end
   if (InCombatLockdown and InCombatLockdown()) or (UnitAffectingCombat and UnitAffectingCombat("player")) then return end
   local name = UnitName(unit)
   if not name or ns.IsSecret(name) then return end
@@ -150,8 +154,9 @@ local function check(unit)
   if kind then
     bird = ns.BIRD_BY_KEY[kind.s]
   else
+    -- Name fallback only for beasts and critters: "Shore Strider" is a giant, "Gryphon Master" a person
     local ctype = UnitCreatureType and UnitCreatureType(unit)
-    if ctype and not ns.IsSecret(ctype) and (ctype == "Humanoid" or ctype == "Undead") then return end -- "Gryphon Master" etc.
+    if ctype and not ns.IsSecret(ctype) and ctype ~= "Beast" and ctype ~= "Critter" then return end
     bird = ns:MatchBird(name)
   end
   if not bird then return end

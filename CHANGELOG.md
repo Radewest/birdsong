@@ -1,5 +1,12 @@
 # Birdsong changelog
 
+## v0.3.7 (2026-11-27)
+- Fixed: hunter pets and companions (like a pet called "Owl") no longer count as wild birds.
+- Fixed: non-birds with bird-ish names (like the Shore Strider, a giant) no longer count. Name matching now only applies to beasts and critters.
+- One-time clean-up: wrong entries from earlier versions are removed from your life list, journal and zone counts, and the "first seen" is corrected.
+- Lifer reaction now plays for every new bird on your life list, not only a new species, and those pop-ups show "Lifer!" too.
+- Settings: "Test the gasp" button to check the sound works.
+
 ## v0.3.6 (2026-11-12)
 - "Gasp" button on the Lifer pop-up, under "Spot": click it to do /gasp yourself (works even if the game blocks the automatic one).
 - Pop-up text no longer runs under its buttons.

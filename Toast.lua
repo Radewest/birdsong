@@ -134,14 +134,16 @@ function ns:Gasp()
 end
 
 -- Returns how long to wait before the bird's call (0 if no sound played)
+function ns:PlayLiferSound()
+  if not PlaySoundFile then return false end
+  local ok, willPlay = pcall(PlaySoundFile, LIFER_SOUND, self.db.channel or "Master")
+  return ok and willPlay and true or false
+end
+
 function ns:LiferReaction()
   local mode = self.db.liferReaction or "emote"
   if mode == "off" then return 0 end
-  local played = false
-  if PlaySoundFile then
-    local ok, willPlay = pcall(PlaySoundFile, LIFER_SOUND, self.db.channel or "Master")
-    played = ok and willPlay and true or false
-  end
+  local played = self:PlayLiferSound()
   if mode == "emote" then self:Gasp() end -- may be blocked by the client's add-on rules; pcall keeps it safe
   return played and LIFER_LENGTH or 0
 end
@@ -165,9 +167,11 @@ ns:Listen("NEW_SPECIES", function(bird, creatureName, zone, kindID)
 end)
 
 ns:Listen("NEW_KIND", function(bird, creatureName, zone, kindID)
-  if not (ns.db.toast and ns.db.toastKinds) or isRare(kindID) then return end
-  show({ title = UI.BLUE .. "New for your life list|r", body = (creatureName or bird.name) .. "  " .. where(bird, zone),
-    kindID = kindID, birdKey = bird.key, creatureName = creatureName, spot = true })
+  if isRare(kindID) then return end -- RARE_SEEN handles rares
+  local delay = ns:LiferReaction()  -- every new bird on your life list is a lifer
+  if not (ns.db.toast and ns.db.toastKinds) then return end
+  show({ title = UI.BLUE .. "New for your life list|r", lifer = true, body = (creatureName or bird.name) .. "  " .. where(bird, zone),
+    kindID = kindID, birdKey = bird.key, creatureName = creatureName, spot = true, sound = bird.key, callDelay = delay > 0 and delay or nil })
 end)
 
 ns:Listen("BADGE_EARNED", function(b)

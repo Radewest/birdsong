@@ -146,3 +146,5 @@ Enum = { TooltipDataType = { Unit = 2 } }
 
 EMOTED = {}
 DoEmote = function(e) EMOTED[#EMOTED+1] = e end
+
+UnitPlayerControlled = function(u) return UNITS[u] and UNITS[u].pet or false end

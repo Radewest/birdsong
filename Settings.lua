@@ -109,6 +109,17 @@ function ns:BuildSettingsPanel(parent)
     function() return db().toastSound end, function(v) db().toastSound = v end))
   place(cycle(p, "Lifer reaction", { { "emote", "Gasp + /gasp" }, { "sound", "Gasp sound" }, { "off", "Off" } },
     function() return db().liferReaction end, function(v) db().liferReaction = v end))
+  local testRow = CreateFrame("Frame", nil, p)
+  testRow:SetSize(360, 24)
+  local testGasp = CreateFrame("Button", nil, testRow, "UIPanelButtonTemplate")
+  testGasp:SetSize(120, 22); testGasp:SetPoint("LEFT", 186, 0); testGasp:SetText("Test the gasp")
+  local testMsg = testRow:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+  testMsg:SetPoint("LEFT", testGasp, "RIGHT", 8, 0)
+  testGasp:SetScript("OnClick", function()
+    if ns:PlayLiferSound() then testMsg:SetText("|cff40ff40Playing|r")
+    else testMsg:SetText("|cffff7070Not found: restart WoW|r") end
+  end)
+  place(testRow, 26)
   place(checkbox(p, "Buddy's lifers", nil,
     function() return db().buddyToasts end, function(v) db().buddyToasts = v end))
 
